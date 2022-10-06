@@ -1,11 +1,12 @@
 /* Coloque aqui definições regulares */
 
 %{
+
 #include <string>
 
 string lexema;
 
-string S_Parser(string s) {
+string sParser(string s) {
     return s.substr(1, s.size()-2);
 }
 
@@ -28,8 +29,8 @@ AS_SIM  \'(\\.|(\'\')*|[^'\\])*\'
 AS_DUP  \"(\\.|(\"\")*|[^"\\])*\"
 EXPR    $\{[^\n]*\}
 STRING  {AS_SIM}|{AS_DUP}
-STRING2 \`.*\`
-COMENT  ("/*"|"//")([^*]*|(\*+[^/]))*"*/"
+STRING2 \`((.|\n)*)\`
+COMENT  (\/\*|\/\/)([^*]*|(\*+[^/]))*\*\/
 
 %%
     /* Padrões e ações. Nesta seção, comentários devem ter um tab antes */
@@ -54,9 +55,9 @@ COMENT  ("/*"|"//")([^*]*|(\*+[^/]))*"*/"
 
 {EXPR}      { lexema = yytext; return _EXPR; }
 
-{STRING2}   { lexema = S_Parser(yytext); return _STRING2; }
+{STRING2}   { lexema = sParser(yytext); return _STRING2; }
 
-{STRING}    { lexema = S_Parser(yytext); return _STRING; }
+{STRING}    { lexema = sParser(yytext); return _STRING; }
 
 {COMENT}    { lexema = yytext; return _COMENTARIO; }
 
